@@ -35,9 +35,20 @@ matrix_t* ogllMCreate(size_t cols, size_t rows) {
         return NULL;
 }
 
-void ogllMSet(matrix_t* m, int col, int row, GLfloat f) {
+void ogllMSet(matrix_t* m, size_t col, size_t row, GLfloat f) {
         if(m) {
                 m->m[m->cols * col + row] = f;
+        }
+}
+
+/* Scale a Matrix by some scalar */
+void ogllMScale(matrix_t* m, GLfloat f) {
+        size_t i;
+
+        if(m) {
+                for(i = 0; i < m->cols * m->rows; i++) {
+                        m->m[i] *= f;
+                }
         }
 }
 

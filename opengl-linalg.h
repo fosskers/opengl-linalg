@@ -25,7 +25,10 @@ matrix_t* ogllMCreate(size_t cols, size_t rows);
 matrix_t* ogllMIdentity(size_t dim);
 
 /* Set a value in a Matrix */
-void ogllMSet(matrix_t* m, int col, int row, GLfloat f);
+void ogllMSet(matrix_t* m, size_t col, size_t row, GLfloat f);
+
+/* Scale a Matrix by some scalar */
+void ogllMScale(matrix_t* m, GLfloat f);
 
 /* Deallocate a Matrix */
 void ogllMDestroy(matrix_t* m);
