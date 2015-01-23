@@ -48,6 +48,9 @@ void ogllMScale(matrix_t* m, GLfloat f);
 /* Add two same-sized Matrices together. Returns a new Matrix. */
 matrix_t* ogllMAdd(matrix_t* m1, matrix_t* m2);
 
+/* The values of m2 are added to m1 */
+matrix_t* ogllMAddInPlace(matrix_t* m1, matrix_t* m2);
+
 /* Multiply two matrices together. The number of rows of m2 must match
    the number of columns of m1. Returns a new Matrix. */
 matrix_t* ogllMMultiply(matrix_t* m1, matrix_t* m2);

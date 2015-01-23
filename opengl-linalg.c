@@ -129,7 +129,7 @@ void ogllMSet(matrix_t* m, size_t col, size_t row, GLfloat f) {
         }
 }
 
-/* Scale a Matrix by some scalar */
+/* Scale a Matrix by some scalar. If the Matrix is 4x4, resets the homo bit */
 void ogllMScale(matrix_t* m, GLfloat f) {
         size_t i;
 
@@ -137,26 +137,43 @@ void ogllMScale(matrix_t* m, GLfloat f) {
                 for(i = 0; i < m->cols * m->rows; i++) {
                         m->m[i] *= f;
                 }
+
+                // Reset homo bit to 1.
+                if(m->cols == 4 && m->rows == 4) {
+                        ogllMSet(m,3,3,1);
+                }
         }
 }
 
 /* Add two same-sized Matrices together. Returns a new Matrix. */
 matrix_t* ogllMAdd(matrix_t* m1, matrix_t* m2) {
         matrix_t* newM = NULL;
+
+        check(m1 && m2, "Null Matrices given.");
+
+        newM = ogllMCopy(m1);
+        check(newM, "Failed to create Matrix.");
+
+        newM = ogllMAddInPlace(newM,m2);
+
+        return newM;
+ error:
+        return NULL;
+}
+
+/* The values of m2 are added to m1 */
+matrix_t* ogllMAddInPlace(matrix_t* m1, matrix_t* m2) {
         size_t i;
 
         check(m1 && m2, "Null Matrices given.");
         check(m1->cols == m2->cols && m1->rows == m2->rows,
               "Matrices given aren't the same size.");
 
-        newM = ogllMCreate(m1->cols,m1->rows);
-        check(newM, "Failed to create Matrix.");
-
         for(i = 0; i < m1->cols * m1->rows; i++) {
-                newM->m[i] = m1->m[i] + m2->m[i];
+                m1->m[i] += m2->m[i];
         }
 
-        return newM;
+        return m1;
  error:
         return NULL;
 }

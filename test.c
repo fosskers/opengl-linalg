@@ -48,7 +48,6 @@ int main(int argc, char** argv) {
         log_info("Transpose");
         matrix_t* trans = ogllMTranspose(prod);
         ogllMPrint(trans);
-        ogllMPrintLinear(trans);
         
         ogllMDestroy(m);
         ogllMDestroy(n);
