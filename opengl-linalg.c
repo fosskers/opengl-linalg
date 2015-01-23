@@ -9,7 +9,7 @@
 matrix_t* ogllMCreate(size_t cols, size_t rows) {
         matrix_t* m = NULL;
         GLfloat* innerM;
-        unsigned int i;
+        size_t i;
 
         check(cols > 0 && rows > 0, "Bad dimensions given.");
 
@@ -35,9 +35,42 @@ matrix_t* ogllMCreate(size_t cols, size_t rows) {
         return NULL;
 }
 
+/* Create a column-major Matrix from a given array of floats */
+matrix_t* ogllMFromArray(size_t cols, size_t rows, GLfloat* fs) {
+        matrix_t* m = NULL;
+        size_t i;
+        
+        check(fs, "Null float array given.");
+        check(cols > 0 && rows > 0, "Bad sizes given.");
+
+        m = ogllMCreate(cols,rows);
+
+        check(m, "Failed to create matrix.");
+
+        for(i = 0; i < cols * rows; i++) {
+                m->m[i] = fs[i];
+        }
+        
+        return m;
+ error:
+        return NULL;
+}
+
+/* Create an Identity Matrix of size `dim` */
+matrix_t* ogllMIdentity(size_t dim) {
+        matrix_t* m = ogllMCreate(dim,dim);
+        unsigned int i;
+
+        for(i = 0; i < dim; i++) {
+                m->m[dim * i + i] = 1;
+        }
+
+        return m;
+}
+
 void ogllMSet(matrix_t* m, size_t col, size_t row, GLfloat f) {
-        if(m) {
-                m->m[m->cols * col + row] = f;
+        if(m && m->cols >= col && m->rows >= row) {
+                m->m[m->rows * col + row] = f;
         }
 }
 
@@ -74,17 +107,28 @@ void ogllMDestroy(matrix_t* m) {
 
 /* Print a Matrix */
 void ogllMPrint(matrix_t* m) {
-        unsigned int i,j;
+        size_t i,j;
 
         if(m) {
                 for(i = 0; i < m->rows; i++) {
                         printf("[ ");
 
                         for(j = 0; j < m->cols; j++) {
-                                printf("%.2f ", m->m[m->cols * j + i]);
+                                printf("%.2f ", m->m[m->rows * j + i]);
                         }
 
                         printf("]\n");
+                }
+        }
+}
+
+/* Print Matrix values in their internal order */
+void ogllMPrintLinear(matrix_t* m) {
+        size_t i;
+
+        if(m) {
+                for(i = 0; i < (m->rows * m->cols); i++) {
+                        printf("%.2f\n", m->m[i]);
                 }
         }
 }
