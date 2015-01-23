@@ -85,16 +85,35 @@ void ogllMScale(matrix_t* m, GLfloat f) {
         }
 }
 
-/* Create an Identity Matrix of size `dim` */
-matrix_t* ogllMIdentity(size_t dim) {
-        matrix_t* m = ogllMCreate(dim,dim);
-        unsigned int i;
+/* Multiply two matrices together. The number of rows
+   of m2 must match the number of columns of m1.
+   Returns a new matrix. */
+matrix_t* ogllMMultiply(matrix_t* m1, matrix_t* m2) {
+        matrix_t* newM = NULL;
+        size_t i,j,k;
 
-        for(i = 0; i < dim; i++) {
-                m->m[dim * i + i] = 1;
+        // Were the matrices given valid?
+        check(m1 && m2, "Null matrices given.");
+        check(m1->cols == m2->rows, "Matrix sizes not compatible.");
+
+        newM = ogllMCreate(m2->cols, m1->rows);
+        check_mem(newM);
+
+        for (i = 0; i < m1->rows; i++) {
+                for (j = 0; j < m2->cols; j++) {
+                        newM->m[j * (m1->rows) + i] = 0;
+
+                        for (k = 0; k < m2->rows; k++) {
+                                newM->m[j * (m1->rows) + i] +=
+                                        m1->m[k * (m1->rows) + i] *
+                                        m2->m[j * (m2->rows) + k];
+                        }
+                }
         }
 
-        return m;
+        return newM;
+ error:
+        return NULL;
 }
 
 /* Deallocate a Matrix */
