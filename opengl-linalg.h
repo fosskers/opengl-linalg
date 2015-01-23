@@ -52,6 +52,9 @@ matrix_t* ogllMAdd(matrix_t* m1, matrix_t* m2);
    the number of columns of m1. Returns a new Matrix. */
 matrix_t* ogllMMultiply(matrix_t* m1, matrix_t* m2);
 
+/* Transpose a Matrix. Returns a new Matrix. */
+matrix_t* ogllMTranspose(matrix_t* m);
+
 /* Deallocate a Matrix */
 void ogllMDestroy(matrix_t* m);
 

@@ -44,6 +44,11 @@ int main(int argc, char** argv) {
         log_info("Testing Matrix equality");
         printf("Equal? %d\n", ogllMEqual(copy,copy));
         printf("Equal? %d\n", ogllMEqual(copy,sum));
+
+        log_info("Transpose");
+        matrix_t* trans = ogllMTranspose(prod);
+        ogllMPrint(trans);
+        ogllMPrintLinear(trans);
         
         ogllMDestroy(m);
         ogllMDestroy(n);
@@ -51,6 +56,7 @@ int main(int argc, char** argv) {
         ogllMDestroy(prod);
         ogllMDestroy(sum);
         ogllMDestroy(copy);
+        ogllMDestroy(trans);
         
         return EXIT_SUCCESS;
 

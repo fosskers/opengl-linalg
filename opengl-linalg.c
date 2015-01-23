@@ -192,6 +192,27 @@ matrix_t* ogllMMultiply(matrix_t* m1, matrix_t* m2) {
         return NULL;
 }
 
+/* Transpose a Matrix. Returns a new Matrix. */
+matrix_t* ogllMTranspose(matrix_t* m) {
+        matrix_t* newM = NULL;
+        size_t i,j;
+
+        check(m, "Null Matrix given.");
+
+        newM = ogllMCreate(m->rows,m->cols);
+        check(newM, "Matrix creation failed.");
+
+        for(i = 0; i < m->rows; i++) {
+                for(j = 0; j < m->cols; j++) {
+                        newM->m[i * m->cols + j] = m->m[j * m->rows + i];
+                }
+        }
+
+        return newM;
+ error:
+        return NULL;
+}
+
 /* Deallocate a Matrix */
 void ogllMDestroy(matrix_t* m) {
         if(m) {
