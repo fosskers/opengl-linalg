@@ -30,6 +30,8 @@ int main(int argc, char** argv) {
         matrix_t* prod = ogllMMultiply(n,m);
         ogllMPrint(prod);
         printf("cols: %d rows: %d\n", prod->cols, prod->rows);
+        log_info("Product of incompatable matrices");
+        ogllMMultiply(m,n);
 
         log_info("Sum of two matrices");
         matrix_t* sum = ogllMAdd(n,o);
@@ -38,12 +40,17 @@ int main(int argc, char** argv) {
         log_info("Copying a matrix");
         matrix_t* copy = ogllMCopy(m);
         ogllMPrint(copy);
+
+        log_info("Testing Matrix equality");
+        printf("Equal? %d\n", ogllMEqual(copy,copy));
+        printf("Equal? %d\n", ogllMEqual(copy,sum));
         
         ogllMDestroy(m);
         ogllMDestroy(n);
         ogllMDestroy(o);
         ogllMDestroy(prod);
         ogllMDestroy(sum);
+        ogllMDestroy(copy);
         
         return EXIT_SUCCESS;
 

@@ -105,6 +105,24 @@ matrix_t* ogllMIdentity(size_t dim) {
         return NULL;
 }
 
+/* Are two Matrices equal? */
+bool ogllMEqual(matrix_t* m1, matrix_t* m2) {
+        size_t i;
+
+        check(m1 && m2, "Null Matrices given.");
+        check(m1->cols == m2->cols && m1->rows == m2->rows,
+              "Matrices given aren't the same size.");
+
+        for(i = 0; i < m1->cols * m1->rows; i++) {
+                quiet_check(m1->m[i] == m2->m[i]);
+        }
+
+        return true;
+ error:
+        return false;
+}
+
+/* Set a value in a Matrix */
 void ogllMSet(matrix_t* m, size_t col, size_t row, GLfloat f) {
         if(m && m->cols >= col && m->rows >= row) {
                 m->m[m->rows * col + row] = f;

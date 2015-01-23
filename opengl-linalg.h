@@ -2,6 +2,7 @@
 #define __opengl_linalg__
 
 #include <GL/glew.h>
+#include <stdbool.h>
 
 // --- //
 
@@ -34,6 +35,9 @@ matrix_t* ogllMCopy(matrix_t* m);
 
 /* Create an Identity Matrix of size `dim` */
 matrix_t* ogllMIdentity(size_t dim);
+
+/* Are two Matrices equal? */
+bool ogllMEqual(matrix_t* m1, matrix_t* m2);
 
 /* Set a value in a Matrix */
 void ogllMSet(matrix_t* m, size_t col, size_t row, GLfloat f);
