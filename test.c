@@ -12,6 +12,7 @@ int main(int argc, char** argv) {
         GLfloat A[4] = {1,2,3,4};
         GLfloat B[6] = {5,6,2,3,1,7};
         GLfloat C[4] = {5,6,7,8};
+        matrix_t* id = ogllMIdentity(4);
         matrix_t* m = ogllMIdentity(4);
         matrix_t* n = ogllMFromArray(2,2,A);
         matrix_t* o = ogllMFromArray(2,2,C);
@@ -48,6 +49,10 @@ int main(int argc, char** argv) {
         log_info("Transpose");
         matrix_t* trans = ogllMTranspose(prod);
         ogllMPrint(trans);
+
+        log_info("Rotating a Matrix");
+        matrix_t* rot = ogllM4Rotate(id,3.14);
+        ogllMPrint(rot);
         
         ogllMDestroy(m);
         ogllMDestroy(n);
@@ -56,6 +61,7 @@ int main(int argc, char** argv) {
         ogllMDestroy(sum);
         ogllMDestroy(copy);
         ogllMDestroy(trans);
+        ogllMDestroy(rot);
         
         return EXIT_SUCCESS;
 

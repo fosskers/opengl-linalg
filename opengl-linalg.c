@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <math.h>
 
 #include "opengl-linalg.h"
 #include "dbg.h"
@@ -226,6 +227,26 @@ matrix_t* ogllMTranspose(matrix_t* m) {
         }
 
         return newM;
+ error:
+        return NULL;
+}
+
+/* Rotate a Matrix by `r` radians. Returns a new Matrix. */
+matrix_t* ogllM4Rotate(matrix_t* m, GLfloat r) {
+        check(m, "Null Matrix given.");
+        check(m->cols == 4 && m->rows == 4, "Matrix not 4x4");
+
+        GLfloat fs[16] = {
+                cos(r), -sin(r), 0, 0,
+                sin(r), cos(r), 0, 0,
+                0,0,1,0,
+                0,0,0,1
+        };
+
+        matrix_t* rot = ogllMFromArray(4,4,fs);
+        check(rot, "Failed to create rotation Matrix.");
+
+        return ogllMMultiply(m,rot);
  error:
         return NULL;
 }
