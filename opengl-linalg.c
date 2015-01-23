@@ -5,6 +5,20 @@
 
 // --- //
 
+// --- VECTORS --- //
+
+/* Create a Vector filled with zeros */
+matrix_t* ogllVCreate(size_t size) {
+        return ogllMCreate(1,size);
+}
+
+/* Create a Vector from a given array of floats */
+matrix_t* ogllVFromArray(size_t size, GLfloat* fs) {
+        return ogllMFromArray(1,size,fs);
+}
+
+// --- MATRICES --- //
+
 /* Create a column-major matrix */
 matrix_t* ogllMCreate(size_t cols, size_t rows) {
         matrix_t* m = NULL;

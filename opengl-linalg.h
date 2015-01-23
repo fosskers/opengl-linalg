@@ -5,11 +5,6 @@
 
 // --- //
 
-typedef struct vector_t {
-        GLfloat* v;
-        size_t size;
-} vector_t;
-
 typedef struct matrix_t {
         GLfloat* m;
         size_t cols;
@@ -17,6 +12,16 @@ typedef struct matrix_t {
 } matrix_t;
 
 // --- //
+
+// --- VECTORS --- //
+
+/* Create a Vector filled with zeros */
+matrix_t* ogllVCreate(size_t size);
+
+/* Create a Vector from a given array of floats */
+matrix_t* ogllVFromArray(size_t size, GLfloat* fs);
+
+// --- MATRICES --- //
 
 /* Create a column-major Matrix of all 0s */
 matrix_t* ogllMCreate(size_t cols, size_t rows);
