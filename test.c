@@ -34,6 +34,10 @@ int main(int argc, char** argv) {
         log_info("Sum of two matrices");
         matrix_t* sum = ogllMAdd(n,o);
         ogllMPrint(sum);
+
+        log_info("Copying a matrix");
+        matrix_t* copy = ogllMCopy(m);
+        ogllMPrint(copy);
         
         ogllMDestroy(m);
         ogllMDestroy(n);

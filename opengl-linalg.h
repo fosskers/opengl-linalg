@@ -29,6 +29,9 @@ matrix_t* ogllMCreate(size_t cols, size_t rows);
 /* Create a column-major Matrix from a given array of floats */
 matrix_t* ogllMFromArray(size_t cols, size_t rows, GLfloat* fs);
 
+/* Make a copy of a given Matrix */
+matrix_t* ogllMCopy(matrix_t* m);
+
 /* Create an Identity Matrix of size `dim` */
 matrix_t* ogllMIdentity(size_t dim);
 

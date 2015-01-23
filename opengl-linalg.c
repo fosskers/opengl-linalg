@@ -70,6 +70,25 @@ matrix_t* ogllMFromArray(size_t cols, size_t rows, GLfloat* fs) {
         return NULL;
 }
 
+/* Make a copy of a given Matrix */
+matrix_t* ogllMCopy(matrix_t* m) {
+        matrix_t* newM = NULL;
+        size_t i;
+
+        check(m, "Can't copy a Null Matrix.");
+
+        newM = ogllMCreate(m->cols,m->rows);
+        check(newM, "Failed to create new Matrix.");
+
+        for(i = 0; i < m->cols * m->rows; i++) {
+                newM->m[i] = m->m[i];
+        }
+
+        return newM;
+ error:
+        return NULL;
+}
+
 /* Create an Identity Matrix of size `dim` */
 matrix_t* ogllMIdentity(size_t dim) {
         matrix_t* m = ogllMCreate(dim,dim);
