@@ -75,11 +75,15 @@ matrix_t* ogllMIdentity(size_t dim) {
         matrix_t* m = ogllMCreate(dim,dim);
         unsigned int i;
 
+        check(m, "Matrix creation failed.");
+
         for(i = 0; i < dim; i++) {
                 m->m[dim * i + i] = 1;
         }
 
         return m;
+ error:
+        return NULL;
 }
 
 void ogllMSet(matrix_t* m, size_t col, size_t row, GLfloat f) {
@@ -99,9 +103,29 @@ void ogllMScale(matrix_t* m, GLfloat f) {
         }
 }
 
-/* Multiply two matrices together. The number of rows
-   of m2 must match the number of columns of m1.
-   Returns a new matrix. */
+/* Add two same-sized Matrices together. Returns a new Matrix. */
+matrix_t* ogllMAdd(matrix_t* m1, matrix_t* m2) {
+        matrix_t* newM = NULL;
+        size_t i;
+
+        check(m1 && m2, "Null Matrices given.");
+        check(m1->cols == m2->cols && m1->rows == m2->rows,
+              "Matrices given aren't the same size.");
+
+        newM = ogllMCreate(m1->cols,m1->rows);
+        check(newM, "Failed to create Matrix.");
+
+        for(i = 0; i < m1->cols * m1->rows; i++) {
+                newM->m[i] = m1->m[i] + m2->m[i];
+        }
+
+        return newM;
+ error:
+        return NULL;
+}
+
+/* Multiply two matrices together. The number of rows of m2 must match
+   the number of columns of m1. Returns a new Matrix. */
 matrix_t* ogllMMultiply(matrix_t* m1, matrix_t* m2) {
         matrix_t* newM = NULL;
         size_t i,j,k;
@@ -113,6 +137,7 @@ matrix_t* ogllMMultiply(matrix_t* m1, matrix_t* m2) {
         newM = ogllMCreate(m2->cols, m1->rows);
         check_mem(newM);
 
+        // O(n^3)? I'm sorry?
         for (i = 0; i < m1->rows; i++) {
                 for (j = 0; j < m2->cols; j++) {
                         newM->m[j * (m1->rows) + i] = 0;

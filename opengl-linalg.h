@@ -38,9 +38,11 @@ void ogllMSet(matrix_t* m, size_t col, size_t row, GLfloat f);
 /* Scale a Matrix by some scalar */
 void ogllMScale(matrix_t* m, GLfloat f);
 
-/* Multiply two matrices together. The number of rows
-   of m2 must match the number of columns of m1.
-   Returns a new matrix. */
+/* Add two same-sized Matrices together. Returns a new Matrix. */
+matrix_t* ogllMAdd(matrix_t* m1, matrix_t* m2);
+
+/* Multiply two matrices together. The number of rows of m2 must match
+   the number of columns of m1. Returns a new Matrix. */
 matrix_t* ogllMMultiply(matrix_t* m1, matrix_t* m2);
 
 /* Deallocate a Matrix */
