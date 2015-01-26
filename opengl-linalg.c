@@ -193,7 +193,7 @@ matrix_t* ogllMMultiply(matrix_t* m1, matrix_t* m2) {
         check_mem(newM);
 
         // O(n^3)? I'm sorry?
-        for (i = 0; i < m1->rows; i++) {
+        for(i = 0; i < m1->rows; i++) {
                 for (j = 0; j < m2->cols; j++) {
                         newM->m[j * (m1->rows) + i] = 0;
 
@@ -206,6 +206,40 @@ matrix_t* ogllMMultiply(matrix_t* m1, matrix_t* m2) {
         }
 
         return newM;
+ error:
+        return NULL;
+}
+
+/* Multiply two matrices together in place. Affects `m1`.
+   The number of rows of m2 must match the number of columns of m1. */
+matrix_t* ogllM4MultiplyInPlace(matrix_t* m1, matrix_t* m2) {
+        static GLfloat fs[16];
+        size_t i,j,k;
+
+        // Were the matrices given valid?
+        check(m1 && m2, "Null matrices given.");
+        check(m1->cols == 4 && m1->rows == 4, "Matrix not 4x4.");
+        check(m1->cols == m2->rows, "Matrix sizes not compatible.");
+
+        // O(n^3)? I'm sorry?
+        for(i = 0; i < m1->rows; i++) {
+                for (j = 0; j < m2->cols; j++) {
+                        fs[j * (m1->rows) + i] = 0;
+
+                        for (k = 0; k < m2->rows; k++) {
+                                fs[j * (m1->rows) + i] +=
+                                        m1->m[k * (m1->rows) + i] *
+                                        m2->m[j * (m2->rows) + k];
+                        }
+                }
+        }
+
+        // Copy values back into `m1`.
+        for(i = 0; i < m1->cols * m1->rows; i++) {
+                m1->m[i] = fs[i];
+        }
+
+        return m1;
  error:
         return NULL;
 }
@@ -247,6 +281,35 @@ matrix_t* ogllM4Rotate(matrix_t* m, GLfloat r) {
         check(rot, "Failed to create rotation Matrix.");
 
         return ogllMMultiply(m,rot);
+ error:
+        return NULL;
+}
+
+/* Rotate a 4x4 Matrix in place by `r` radians. */
+matrix_t* ogllM4RotateInPlace(matrix_t* m, GLfloat r) {
+        static matrix_t rot;
+        static GLfloat fs[16] = {
+                1,0,0,0,
+                0,1,0,0,
+                0,0,1,0,
+                0,0,0,1
+        };
+
+        check(m, "Null Matrix given.");
+        check(m->cols == 4 && m->rows == 4, "Matrix not 4x4");
+
+        // Set rotation values.
+        fs[0] = cos(r);
+        fs[1] = sin(r);
+        fs[4] = -sin(r);
+        fs[5] = cos(r);
+
+        // Set stack struct values.
+        rot.m = fs;
+        rot.cols = 4;
+        rot.rows = 4;
+
+        return ogllM4MultiplyInPlace(m,&rot);
  error:
         return NULL;
 }

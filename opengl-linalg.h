@@ -55,11 +55,17 @@ matrix_t* ogllMAddInPlace(matrix_t* m1, matrix_t* m2);
    the number of columns of m1. Returns a new Matrix. */
 matrix_t* ogllMMultiply(matrix_t* m1, matrix_t* m2);
 
+/* Multiply two 4x4 matrices together in place. Affects `m1`. */
+matrix_t* ogllM4MultiplyInPlace(matrix_t* m1, matrix_t* m2);
+
 /* Transpose a Matrix. Returns a new Matrix. */
 matrix_t* ogllMTranspose(matrix_t* m);
 
 /* Rotate a 4x4 Matrix by `r` radians. Returns a new Matrix. */
 matrix_t* ogllM4Rotate(matrix_t* m, GLfloat r);
+
+/* Rotate a 4x4 Matrix in place by `r` radians. */
+matrix_t* ogllM4RotateInPlace(matrix_t* m, GLfloat r);
 
 /* Deallocate a Matrix */
 void ogllMDestroy(matrix_t* m);

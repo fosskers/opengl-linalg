@@ -51,8 +51,9 @@ int main(int argc, char** argv) {
         ogllMPrint(trans);
 
         log_info("Rotating a Matrix");
-        matrix_t* rot = ogllM4Rotate(id,3.14);
-        ogllMPrint(rot);
+        ogllMPrint(id);
+        ogllM4RotateInPlace(id,3.14);
+        ogllMPrint(id);
         
         ogllMDestroy(m);
         ogllMDestroy(n);
@@ -61,7 +62,6 @@ int main(int argc, char** argv) {
         ogllMDestroy(sum);
         ogllMDestroy(copy);
         ogllMDestroy(trans);
-        ogllMDestroy(rot);
         
         return EXIT_SUCCESS;
 
