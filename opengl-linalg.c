@@ -314,6 +314,21 @@ matrix_t* ogllM4RotateInPlace(matrix_t* m, GLfloat r) {
         return NULL;
 }
 
+/* Adds translation factor to a transformation Matrix (in place) */
+matrix_t* ogllM4TranslateInPlace(matrix_t* m, GLfloat x, GLfloat y, GLfloat z) {
+        check(m, "Null Matrix given.");
+        check(m->cols == 4 && m->rows == 4, "Matrix isn't 4x4");
+
+        // Set translation values.
+        m->m[12] = x;
+        m->m[13] = y;
+        m->m[14] = z;
+
+        return m;
+ error:
+        return NULL;
+}
+
 /* Deallocate a Matrix */
 void ogllMDestroy(matrix_t* m) {
         if(m) {
