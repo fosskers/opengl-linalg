@@ -30,7 +30,7 @@ int main(int argc, char** argv) {
         log_info("Product of two matrices");
         matrix_t* prod = ogllMMultiply(n,m);
         ogllMPrint(prod);
-        printf("cols: %d rows: %d\n", prod->cols, prod->rows);
+        debug("cols: %d rows: %d", prod->cols, prod->rows);
         log_info("Product of incompatable matrices");
         ogllMMultiply(m,n);
 

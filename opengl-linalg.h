@@ -70,6 +70,9 @@ matrix_t* ogllM4RotateInPlace(matrix_t* m, GLfloat r);
 /* Adds translation factor to a transformation Matrix (in place) */
 matrix_t* ogllM4TranslateInPlace(matrix_t* m, GLfloat x, GLfloat y, GLfloat z);
 
+/* Produces a Perspective Projection Matrix. */
+matrix_t* ogllMPerspective(GLfloat l, GLfloat r, GLfloat b, GLfloat t, GLfloat n, GLfloat f);
+
 /* Deallocate a Matrix */
 void ogllMDestroy(matrix_t* m);
 

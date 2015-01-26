@@ -329,6 +329,25 @@ matrix_t* ogllM4TranslateInPlace(matrix_t* m, GLfloat x, GLfloat y, GLfloat z) {
         return NULL;
 }
 
+/* Produces a Perspective Projection Matrix. */
+matrix_t* ogllMPerspective(GLfloat l, GLfloat r, GLfloat b, GLfloat t,
+                           GLfloat n, GLfloat f) {
+        matrix_t* m = NULL;
+        GLfloat fs[16] = {
+                (2*n)/(r-l), 0, (r+l)/(r-l), 0,
+                0, (2*n)/(t-b), (t+b)/(t-b), 0,
+                0, 0, -(f+n)/(f-n), (-2*f*n)/(f-n),
+                0, 0, -1, 0
+        };
+
+        m = ogllMFromArray(4,4,fs);
+        check(m, "Could not create Perspective Matrix.");
+
+        return m;
+ error:
+        return NULL;
+}
+
 /* Deallocate a Matrix */
 void ogllMDestroy(matrix_t* m) {
         if(m) {
