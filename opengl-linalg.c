@@ -329,10 +329,22 @@ matrix_t* ogllM4TranslateInPlace(matrix_t* m, GLfloat x, GLfloat y, GLfloat z) {
         return NULL;
 }
 
-/* Produces a Perspective Projection Matrix. */
-matrix_t* ogllMPerspective(GLfloat l, GLfloat r, GLfloat b, GLfloat t,
-                           GLfloat n, GLfloat f) {
+/* Produces a Perspective Projection Matrix.
+   fov  := Field of View. Vertical eye angle, usually (tau/8).
+   aspr := Aspect Ratio. Screen (width/height).
+   n    := Distance from camera to near-clipping plane.
+   f    := Distance from camera to far-clipping plane. */
+matrix_t* ogllMPerspective(GLfloat fov, GLfloat aspr, GLfloat n, GLfloat f) {
         matrix_t* m = NULL;
+
+        check(aspr > 0, "Invalid Aspect Ratio given.");
+        check(n < f, "Near-clipping plane farther than far-clipping plane!");
+
+        GLfloat t = n * tan(fov / 2.0);
+        GLfloat b = -t;
+        GLfloat r = t * aspr;
+        GLfloat l = -r;
+
         GLfloat fs[16] = {
                 (2*n)/(r-l), 0, (r+l)/(r-l), 0,
                 0, (2*n)/(t-b), (t+b)/(t-b), 0,
