@@ -12,6 +12,7 @@ int main(int argc, char** argv) {
         GLfloat A[4] = {1,2,3,4};
         GLfloat B[6] = {5,6,2,3,1,7};
         GLfloat C[4] = {5,6,7,8};
+        GLfloat z[3] = {0,0,1};
         matrix_t* id = ogllMIdentity(4);
         matrix_t* m = ogllMIdentity(4);
         matrix_t* n = ogllMFromArray(2,2,A);
@@ -28,14 +29,14 @@ int main(int argc, char** argv) {
         ogllMPrint(m);
 
         log_info("Product of two matrices");
-        matrix_t* prod = ogllMMultiply(n,m);
+        matrix_t* prod = ogllMMultiplyP(n,m);
         ogllMPrint(prod);
         debug("cols: %d rows: %d", prod->cols, prod->rows);
         log_info("Product of incompatable matrices");
-        ogllMMultiply(m,n);
+        ogllMMultiplyP(m,n);
 
         log_info("Sum of two matrices");
-        matrix_t* sum = ogllMAdd(n,o);
+        matrix_t* sum = ogllMAddP(n,o);
         ogllMPrint(sum);
 
         log_info("Copying a matrix");
@@ -52,9 +53,11 @@ int main(int argc, char** argv) {
 
         log_info("Rotating a Matrix");
         ogllMPrint(id);
-        ogllM4RotateInPlace(id,3.14);
+        ogllM4Rotate(id,tau/2,ogllVFromArray(3,z));
         ogllMPrint(id);
-        
+
+        debug("Destroying Matrices...");
+
         ogllMDestroy(m);
         ogllMDestroy(n);
         ogllMDestroy(o);

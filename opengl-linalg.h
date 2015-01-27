@@ -44,40 +44,37 @@ bool ogllMEqual(matrix_t* m1, matrix_t* m2);
 /* Set a value in a Matrix */
 void ogllMSet(matrix_t* m, size_t col, size_t row, GLfloat f);
 
-/* Scale a Matrix by some scalar */
+/* Scale a Matrix by some scalar in place */
 void ogllMScale(matrix_t* m, GLfloat f);
 
-/* Add two same-sized Matrices together. Returns a new Matrix. */
+/* The values of m2 are added to m1 */
 matrix_t* ogllMAdd(matrix_t* m1, matrix_t* m2);
 
-/* The values of m2 are added to m1 */
-matrix_t* ogllMAddInPlace(matrix_t* m1, matrix_t* m2);
+/* Add two same-sized Matrices together. Returns a new Matrix. */
+matrix_t* ogllMAddP(matrix_t* m1, matrix_t* m2);
+
+/* Multiply two 4x4 matrices together in place. Affects `m1`. */
+matrix_t* ogllM4Multiply(matrix_t* m1, matrix_t* m2);
 
 /* Multiply two matrices together. The number of rows of m2 must match
    the number of columns of m1. Returns a new Matrix. */
-matrix_t* ogllMMultiply(matrix_t* m1, matrix_t* m2);
-
-/* Multiply two 4x4 matrices together in place. Affects `m1`. */
-matrix_t* ogllM4MultiplyInPlace(matrix_t* m1, matrix_t* m2);
+matrix_t* ogllMMultiplyP(matrix_t* m1, matrix_t* m2);
 
 /* Transpose a Matrix. Returns a new Matrix. */
 matrix_t* ogllMTranspose(matrix_t* m);
 
-/* Rotate a 4x4 Matrix by `r` radians. Returns a new Matrix. */
-matrix_t* ogllM4Rotate(matrix_t* m, GLfloat r);
-
-/* Rotate a 4x4 Matrix in place by `r` radians. */
-matrix_t* ogllM4RotateInPlace(matrix_t* m, GLfloat r);
+/* Rotate a 4x4 Matrix in place by `r` radians around the unit vector `v` */
+matrix_t* ogllM4Rotate(matrix_t* m, GLfloat r, matrix_t* v);
 
 /* Adds translation factor to a transformation Matrix (in place) */
-matrix_t* ogllM4TranslateInPlace(matrix_t* m, GLfloat x, GLfloat y, GLfloat z);
+matrix_t* ogllM4Translate(matrix_t* m, GLfloat x, GLfloat y, GLfloat z);
 
 /* Produces a Perspective Projection Matrix.
    fov  := Field of View. Vertical eye angle, usually (tau/8).
    aspr := Aspect Ratio. Screen (width/height).
    n    := Distance from camera to near-clipping plane.
    f    := Distance from camera to far-clipping plane. */
-matrix_t* ogllMPerspective(GLfloat fov, GLfloat aspr, GLfloat n, GLfloat f);
+matrix_t* ogllMPerspectiveP(GLfloat fov, GLfloat aspr, GLfloat n, GLfloat f);
 
 /* Deallocate a Matrix */
 void ogllMDestroy(matrix_t* m);

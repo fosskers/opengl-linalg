@@ -146,24 +146,8 @@ void ogllMScale(matrix_t* m, GLfloat f) {
         }
 }
 
-/* Add two same-sized Matrices together. Returns a new Matrix. */
-matrix_t* ogllMAdd(matrix_t* m1, matrix_t* m2) {
-        matrix_t* newM = NULL;
-
-        check(m1 && m2, "Null Matrices given.");
-
-        newM = ogllMCopy(m1);
-        check(newM, "Failed to create Matrix.");
-
-        newM = ogllMAddInPlace(newM,m2);
-
-        return newM;
- error:
-        return NULL;
-}
-
 /* The values of m2 are added to m1 */
-matrix_t* ogllMAddInPlace(matrix_t* m1, matrix_t* m2) {
+matrix_t* ogllMAdd(matrix_t* m1, matrix_t* m2) {
         size_t i;
 
         check(m1 && m2, "Null Matrices given.");
@@ -179,31 +163,16 @@ matrix_t* ogllMAddInPlace(matrix_t* m1, matrix_t* m2) {
         return NULL;
 }
 
-/* Multiply two matrices together. The number of rows of m2 must match
-   the number of columns of m1. Returns a new Matrix. */
-matrix_t* ogllMMultiply(matrix_t* m1, matrix_t* m2) {
+/* Add two same-sized Matrices together. Returns a new Matrix. */
+matrix_t* ogllMAddP(matrix_t* m1, matrix_t* m2) {
         matrix_t* newM = NULL;
-        size_t i,j,k;
 
-        // Were the matrices given valid?
-        check(m1 && m2, "Null matrices given.");
-        check(m1->cols == m2->rows, "Matrix sizes not compatible.");
+        check(m1 && m2, "Null Matrices given.");
 
-        newM = ogllMCreate(m2->cols, m1->rows);
-        check_mem(newM);
+        newM = ogllMCopy(m1);
+        check(newM, "Failed to create Matrix.");
 
-        // O(n^3)? I'm sorry?
-        for(i = 0; i < m1->rows; i++) {
-                for (j = 0; j < m2->cols; j++) {
-                        newM->m[j * (m1->rows) + i] = 0;
-
-                        for (k = 0; k < m2->rows; k++) {
-                                newM->m[j * (m1->rows) + i] +=
-                                        m1->m[k * (m1->rows) + i] *
-                                        m2->m[j * (m2->rows) + k];
-                        }
-                }
-        }
+        newM = ogllMAdd(newM,m2);
 
         return newM;
  error:
@@ -212,7 +181,7 @@ matrix_t* ogllMMultiply(matrix_t* m1, matrix_t* m2) {
 
 /* Multiply two matrices together in place. Affects `m1`.
    The number of rows of m2 must match the number of columns of m1. */
-matrix_t* ogllM4MultiplyInPlace(matrix_t* m1, matrix_t* m2) {
+matrix_t* ogllM4Multiply(matrix_t* m1, matrix_t* m2) {
         static GLfloat fs[16];
         size_t i,j,k;
 
@@ -244,6 +213,37 @@ matrix_t* ogllM4MultiplyInPlace(matrix_t* m1, matrix_t* m2) {
         return NULL;
 }
 
+/* Multiply two matrices together. The number of rows of m2 must match
+   the number of columns of m1. Returns a new Matrix. */
+matrix_t* ogllMMultiplyP(matrix_t* m1, matrix_t* m2) {
+        matrix_t* newM = NULL;
+        size_t i,j,k;
+
+        // Were the matrices given valid?
+        check(m1 && m2, "Null matrices given.");
+        check(m1->cols == m2->rows, "Matrix sizes not compatible.");
+
+        newM = ogllMCreate(m2->cols, m1->rows);
+        check_mem(newM);
+
+        // O(n^3)? I'm sorry?
+        for(i = 0; i < m1->rows; i++) {
+                for (j = 0; j < m2->cols; j++) {
+                        newM->m[j * (m1->rows) + i] = 0;
+
+                        for (k = 0; k < m2->rows; k++) {
+                                newM->m[j * (m1->rows) + i] +=
+                                        m1->m[k * (m1->rows) + i] *
+                                        m2->m[j * (m2->rows) + k];
+                        }
+                }
+        }
+
+        return newM;
+ error:
+        return NULL;
+}
+
 /* Transpose a Matrix. Returns a new Matrix. */
 matrix_t* ogllMTranspose(matrix_t* m) {
         matrix_t* newM = NULL;
@@ -265,28 +265,8 @@ matrix_t* ogllMTranspose(matrix_t* m) {
         return NULL;
 }
 
-/* Rotate a Matrix by `r` radians. Returns a new Matrix. */
-matrix_t* ogllM4Rotate(matrix_t* m, GLfloat r) {
-        check(m, "Null Matrix given.");
-        check(m->cols == 4 && m->rows == 4, "Matrix not 4x4");
-
-        GLfloat fs[16] = {
-                cos(r), -sin(r), 0, 0,
-                sin(r), cos(r), 0, 0,
-                0,0,1,0,
-                0,0,0,1
-        };
-
-        matrix_t* rot = ogllMFromArray(4,4,fs);
-        check(rot, "Failed to create rotation Matrix.");
-
-        return ogllMMultiply(m,rot);
- error:
-        return NULL;
-}
-
-/* Rotate a 4x4 Matrix in place by `r` radians. */
-matrix_t* ogllM4RotateInPlace(matrix_t* m, GLfloat r) {
+/* Rotate a 4x4 Matrix in place by `r` radians around the unit vector `v` */
+matrix_t* ogllM4Rotate(matrix_t* m, GLfloat r, matrix_t* v) {
         static matrix_t rot;
         static GLfloat fs[16] = {
                 1,0,0,0,
@@ -295,27 +275,43 @@ matrix_t* ogllM4RotateInPlace(matrix_t* m, GLfloat r) {
                 0,0,0,1
         };
 
-        check(m, "Null Matrix given.");
+        check(m && v, "Null Matrix/Vector given.");
+        check(v->rows == 3 && v->cols == 1, "Vector must be 3x1");
         check(m->cols == 4 && m->rows == 4, "Matrix not 4x4");
 
-        // Set rotation values.
-        fs[0] = cos(r);
-        fs[1] = sin(r);
-        fs[4] = -sin(r);
-        fs[5] = cos(r);
+        // To simply the Matrix below.
+        GLfloat x = v->m[0];
+        GLfloat y = v->m[1];
+        GLfloat z = v->m[2];
+        GLfloat cosr = cos(r);
+        GLfloat sinr = sin(r);
+        
+        // Borrowed from https://en.wikipedia.org/wiki/Rotation_matrix
+        // Column 1
+        fs[0] = cosr+x*x*(1-cosr);
+        fs[1] = y*x*(1-cosr)+z*sinr;
+        fs[2] = z*x*(1-cosr)-y*sinr;
+        // Column 2
+        fs[4] = x*y*(1-cosr)-z*sinr;
+        fs[5] = cosr+y*y*(1-cosr);
+        fs[6] = z*y*(1-cosr)+x*sinr;
+        // Column 3
+        fs[8]  = x*z*(1-cosr)+y*sinr;
+        fs[9]  = y*z*(1-cosr)-x*sinr;
+        fs[10] = cosr+z*z*(1-cosr);
 
         // Set stack struct values.
         rot.m = fs;
         rot.cols = 4;
         rot.rows = 4;
 
-        return ogllM4MultiplyInPlace(m,&rot);
+        return ogllM4Multiply(m,&rot);
  error:
         return NULL;
 }
 
 /* Adds translation factor to a transformation Matrix (in place) */
-matrix_t* ogllM4TranslateInPlace(matrix_t* m, GLfloat x, GLfloat y, GLfloat z) {
+matrix_t* ogllM4Translate(matrix_t* m, GLfloat x, GLfloat y, GLfloat z) {
         check(m, "Null Matrix given.");
         check(m->cols == 4 && m->rows == 4, "Matrix isn't 4x4");
 
@@ -334,7 +330,7 @@ matrix_t* ogllM4TranslateInPlace(matrix_t* m, GLfloat x, GLfloat y, GLfloat z) {
    aspr := Aspect Ratio. Screen (width/height).
    n    := Distance from camera to near-clipping plane.
    f    := Distance from camera to far-clipping plane. */
-matrix_t* ogllMPerspective(GLfloat fov, GLfloat aspr, GLfloat n, GLfloat f) {
+matrix_t* ogllMPerspectiveP(GLfloat fov, GLfloat aspr, GLfloat n, GLfloat f) {
         matrix_t* m = NULL;
 
         check(aspr > 0, "Invalid Aspect Ratio given.");
