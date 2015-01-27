@@ -12,6 +12,8 @@ typedef struct matrix_t {
         size_t rows;
 } matrix_t;
 
+const GLfloat tau = 6.283185;
+
 // --- //
 
 // --- VECTORS --- //
