@@ -24,6 +24,9 @@ matrix_t* ogllVCreate(size_t size);
 /* Create a Vector from a given array of floats */
 matrix_t* ogllVFromArray(size_t size, GLfloat* fs);
 
+/* The Cross-Product of two Vectors. Returns a new Vector. */
+matrix_t* ogllVCrossP(matrix_t* v1, matrix_t* v2);
+
 // --- MATRICES --- //
 
 /* Create a column-major Matrix of all 0s */

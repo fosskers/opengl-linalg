@@ -18,6 +18,25 @@ matrix_t* ogllVFromArray(size_t size, GLfloat* fs) {
         return ogllMFromArray(1,size,fs);
 }
 
+/* The Cross-Product of two Vectors. Returns a new Vector. */
+matrix_t* ogllVCrossP(matrix_t* v1, matrix_t* v2) {
+        matrix_t* newV = NULL;
+
+        check(v1 && v2, "Null Vectors given.");
+        check(v1->rows == v2->rows, "Vectors aren't same size.");
+
+        newV = ogllVCreate(v1->rows);
+        check(newV, "Vector creation failed.");
+
+        newV->m[0] = v1->m[1] * v2->m[2] - v1->m[2] * v2->m[1];
+        newV->m[1] = v1->m[0] * v2->m[2] - v1->m[2] * v2->m[0];
+        newV->m[2] = v1->m[0] * v2->m[1] - v1->m[1] * v2->m[0];
+
+        return newV;
+ error:
+        return NULL;
+}
+
 // --- MATRICES --- //
 
 /* Create a column-major matrix */
@@ -59,9 +78,9 @@ matrix_t* ogllMFromArray(size_t cols, size_t rows, GLfloat* fs) {
         check(cols > 0 && rows > 0, "Bad sizes given.");
 
         m = ogllMCreate(cols,rows);
-
         check(m, "Failed to create matrix.");
 
+        // Copy values of given Floats
         for(i = 0; i < cols * rows; i++) {
                 m->m[i] = fs[i];
         }

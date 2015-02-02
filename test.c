@@ -56,8 +56,15 @@ int main(int argc, char** argv) {
         ogllM4Rotate(id,tau/2, 0,0,1);
         ogllMPrint(id);
 
+        log_info("Cross Product");
+        matrix_t* v = ogllVFromArray(4,C);
+        matrix_t* cross = ogllVCrossP(v,v);
+        ogllMPrint(cross);
+
         debug("Destroying Matrices...");
 
+        ogllMDestroy(v);
+        ogllMDestroy(cross);
         ogllMDestroy(m);
         ogllMDestroy(n);
         ogllMDestroy(o);
