@@ -63,8 +63,9 @@ matrix_t* ogllMMultiplyP(matrix_t* m1, matrix_t* m2);
 /* Transpose a Matrix. Returns a new Matrix. */
 matrix_t* ogllMTranspose(matrix_t* m);
 
-/* Rotate a 4x4 Matrix in place by `r` radians around the unit vector `v` */
-matrix_t* ogllM4Rotate(matrix_t* m, GLfloat r, matrix_t* v);
+/* Rotate a 4x4 Matrix in place by `r` radians around the unit vector
+formed by `x` `y` and `z` */
+matrix_t* ogllM4Rotate(matrix_t* m,GLfloat r,GLfloat x,GLfloat y,GLfloat z);
 
 /* Adds translation factor to a transformation Matrix (in place) */
 matrix_t* ogllM4Translate(matrix_t* m, GLfloat x, GLfloat y, GLfloat z);

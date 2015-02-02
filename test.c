@@ -53,7 +53,7 @@ int main(int argc, char** argv) {
 
         log_info("Rotating a Matrix");
         ogllMPrint(id);
-        ogllM4Rotate(id,tau/2,ogllVFromArray(3,z));
+        ogllM4Rotate(id,tau/2, 0,0,1);
         ogllMPrint(id);
 
         debug("Destroying Matrices...");

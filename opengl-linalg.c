@@ -265,8 +265,9 @@ matrix_t* ogllMTranspose(matrix_t* m) {
         return NULL;
 }
 
-/* Rotate a 4x4 Matrix in place by `r` radians around the unit vector `v` */
-matrix_t* ogllM4Rotate(matrix_t* m, GLfloat r, matrix_t* v) {
+/* Rotate a 4x4 Matrix in place by `r` radians around the unit vector
+formed by `x` `y` and `z` */
+matrix_t* ogllM4Rotate(matrix_t* m,GLfloat r,GLfloat x,GLfloat y,GLfloat z) {
         static matrix_t rot;
         static GLfloat fs[16] = {
                 1,0,0,0,
@@ -275,14 +276,10 @@ matrix_t* ogllM4Rotate(matrix_t* m, GLfloat r, matrix_t* v) {
                 0,0,0,1
         };
 
-        check(m && v, "Null Matrix/Vector given.");
-        check(v->rows == 3 && v->cols == 1, "Vector must be 3x1");
+        check(m, "Null Matrix given.");
         check(m->cols == 4 && m->rows == 4, "Matrix not 4x4");
 
         // To simply the Matrix below.
-        GLfloat x = v->m[0];
-        GLfloat y = v->m[1];
-        GLfloat z = v->m[2];
         GLfloat cosr = cos(r);
         GLfloat sinr = sin(r);
         
