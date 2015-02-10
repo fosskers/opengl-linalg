@@ -27,6 +27,18 @@ matrix_t* ogllVFromArray(size_t size, GLfloat* fs);
 /* The Cross-Product of two Vectors. Returns a new Vector. */
 matrix_t* ogllVCrossP(matrix_t* v1, matrix_t* v2);
 
+/* Yields the Length/Magnitude of a given Vector */
+GLfloat ogllVLength(matrix_t* v);
+
+/* Yields the Dot Product of two Vectors */
+GLfloat ogllVDotProduct(matrix_t* v1, matrix_t* v2);
+
+/* Are two Vectors orthogonal? */
+bool ogllVIsOrtho(matrix_t* v1, matrix_t* v2);
+
+/* Is a given Matrix struct actually a Vector? */
+bool ogllVIsVector(matrix_t* v);
+
 // --- MATRICES --- //
 
 /* Create a column-major Matrix of all 0s */

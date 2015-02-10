@@ -37,6 +37,55 @@ matrix_t* ogllVCrossP(matrix_t* v1, matrix_t* v2) {
         return NULL;
 }
 
+/* Yields the Length/Magnitude of a given Vector */
+GLfloat ogllVLength(matrix_t* v) {
+        GLfloat len = 0;
+        size_t i;
+
+        check(ogllVIsVector(v), "Matrix given.");
+
+        for(i = 0; i < v->rows; i++) {
+                len += v->m[i] * v->m[i];
+        }
+
+        return sqrt(len);
+ error:
+        return 0;
+}
+
+/* Yields the Dot Product of two Vectors */
+GLfloat ogllVDotProduct(matrix_t* v1, matrix_t* v2) {
+        GLfloat total = 0;
+        size_t i;
+
+        check(ogllVIsVector(v1) && ogllVIsVector(v2), "Matrices given.");
+        check(v1->rows == v2->rows, "Vectors aren't same length.");
+
+        for(i = 0; i < v1->rows; i++) {
+                total += v1->m[i] * v2->m[i];
+        }
+
+        debug("DOT PRODUCT: %f",total);
+
+        return total;
+ error:
+        return 0;  // Take this return value with a grain of salt!
+}
+
+/* Are two Vectors orthogonal? */
+bool ogllVIsOrtho(matrix_t* v1, matrix_t* v2) {
+        return ogllVDotProduct(v1,v2) <= 0.000001;
+}
+
+/* Is a given Matrix struct actually a Vector? */
+bool ogllVIsVector(matrix_t* v) {
+        check(v, "Null Vector given.");
+
+        return v->cols == 1;
+ error:
+        return false;
+}
+
 // --- MATRICES --- //
 
 /* Create a column-major matrix */

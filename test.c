@@ -9,10 +9,10 @@
 
 int main(int argc, char** argv) {
         int i;
-        GLfloat A[4] = {1,2,3,4};
-        GLfloat B[6] = {5,6,2,3,1,7};
-        GLfloat C[4] = {5,6,7,8};
-        GLfloat z[3] = {0,0,1};
+        GLfloat A[] = {1,2,3,4};
+        GLfloat B[] = {5,6,2,3,1,7};
+        GLfloat C[] = {5,6,7,8};
+        GLfloat z[] = {0,0,1,0};
         matrix_t* id = ogllMIdentity(4);
         matrix_t* m = ogllMIdentity(4);
         matrix_t* n = ogllMFromArray(2,2,A);
@@ -58,13 +58,24 @@ int main(int argc, char** argv) {
 
         log_info("Cross Product");
         matrix_t* v = ogllVFromArray(4,C);
+        matrix_t* v2 = ogllVFromArray(4,z);
         matrix_t* cross = ogllVCrossP(v,v);
+        matrix_t* cross2 = ogllVCrossP(v,v2);
         ogllMPrint(cross);
-
+        puts("---");
+        ogllMPrint(cross2);
+        printf("Ortho: %d\n",ogllVIsOrtho(cross2,v));
+        printf("Ortho: %d\n",ogllVIsOrtho(cross2,v2));
+        
+        log_info("Vector Length");
+        printf("%.2f\n", ogllVLength(v2));
+        
         debug("Destroying Matrices...");
 
         ogllMDestroy(v);
+        ogllMDestroy(v2);
         ogllMDestroy(cross);
+        ogllMDestroy(cross2);
         ogllMDestroy(m);
         ogllMDestroy(n);
         ogllMDestroy(o);
