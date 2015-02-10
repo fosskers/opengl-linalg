@@ -92,6 +92,9 @@ matrix_t* ogllM4Translate(matrix_t* m, GLfloat x, GLfloat y, GLfloat z);
    f    := Distance from camera to far-clipping plane. */
 matrix_t* ogllMPerspectiveP(GLfloat fov, GLfloat aspr, GLfloat n, GLfloat f);
 
+/* Generate a View Matrix */
+matrix_t* ogllM4LookAtP(matrix_t* camPos, matrix_t* target, matrix_t* up);
+
 /* Deallocate a Matrix */
 void ogllMDestroy(matrix_t* m);
 

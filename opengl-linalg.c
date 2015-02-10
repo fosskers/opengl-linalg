@@ -247,8 +247,7 @@ matrix_t* ogllMAddP(matrix_t* m1, matrix_t* m2) {
         return NULL;
 }
 
-/* Multiply two matrices together in place. Affects `m1`.
-   The number of rows of m2 must match the number of columns of m1. */
+/* Multiply two 4x4 matrices together in place. Affects `m1`. */
 matrix_t* ogllM4Multiply(matrix_t* m1, matrix_t* m2) {
         static GLfloat fs[16];
         size_t i,j,k;
@@ -416,6 +415,61 @@ matrix_t* ogllMPerspectiveP(GLfloat fov, GLfloat aspr, GLfloat n, GLfloat f) {
 
         return m;
  error:
+        return NULL;
+}
+
+/* Generate a View Matrix */
+matrix_t* ogllM4LookAtP(matrix_t* camPos, matrix_t* target, matrix_t* up) {
+        matrix_t* view     = NULL;
+        matrix_t* camDir   = NULL;
+        matrix_t* camRight = NULL;
+        matrix_t* camUp    = NULL;
+
+        check(camPos && target && up, "Null Vectors given.");
+        check(ogllVIsVector(camPos) &&
+              ogllVIsVector(target) &&
+              ogllVIsVector(up), "Matrices given instead of Vectors.");
+
+        ogllMScale(target,-1);  // For subtraction
+        camDir   = ogllMAddP(camPos,target);
+        camRight = ogllVCrossP(up,camDir);
+        camUp    = ogllVCrossP(camDir,camRight);
+
+        view = ogllMIdentity(4);
+        check(view, "View Matrix creation failed.");
+
+        // Copy values.
+        // Column 1
+        view->m[0] = camRight->m[0];
+        view->m[1] = camUp->m[0];
+        view->m[2] = camDir->m[0];
+
+        // Column 2
+        view->m[4] = camRight->m[1];
+        view->m[5] = camUp->m[1];
+        view->m[6] = camDir->m[1];
+
+        // Column 3
+        view->m[8] = camRight->m[2];
+        view->m[9] = camUp->m[2];
+        view->m[10] = camDir->m[2];
+
+        // Column 4
+        ogllMScale(camPos, -1);
+        view->m[12] = camPos->m[0];
+        view->m[13] = camPos->m[1];
+        view->m[14] = camPos->m[2];
+
+        ogllMDestroy(camDir);
+        ogllMDestroy(camRight);
+        ogllMDestroy(camUp);
+
+        return view;
+ error:
+        if(camDir)   { ogllMDestroy(camDir);   }
+        if(camRight) { ogllMDestroy(camRight); }
+        if(camUp)    { ogllMDestroy(camUp);    }
+
         return NULL;
 }
 
